@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>localStorageTest</title>
+  <title>whoisduck</title>
   <script src=" http://tjs.sjs.sinajs.cn/open/api/js/wb.js?appkey=3433585717" type="text/javascript" charset="utf-8"></script>
 </head>
 <style>
@@ -14,7 +14,7 @@
 		width: 800px;
 		height: 600px;
 		margin: 50px auto;
-		background: #8393ca;
+		background:url('duck.png') center no-repeat #8393ca;
 		border-radius:30px;
 		border:10px dashed white;
 		box-shadow: 0 0 20px;
@@ -37,14 +37,36 @@
 		color: white;
 		box-shadow: 0 0 10px;
 		cursor: pointer;
+		opacity: 0.8
 	}
 	#start:hover{
 		box-shadow: 0 0 20px;
+		opacity: 1;
+	}
+	.inprogress{
+		text-align: center;
+		font-size: 4em;
+		color: white;
+	}
+	.resultlist{
+		list-style: none; 
+		text-align: center;
+	}
+	.resultlist li{
+		display: inline-block;
+		background: #8393ca;
+		padding: 12px;
+		margin: 12px;
+		border-radius: 5px;
+		border: 1px solid #CCC;
+	}
+	.count{color: #f26522;
+		font-size: 2em;
 	}
 </style>
 <body>
  <div id="chart" class='chart-board'>
- 	<h1>你的好友最近谁最聒噪？</h1>
+ 	<h1>你关注的人最近谁最聒噪？</h1>
  	<div id='start' class='btn-begin'>开始分析</div>
  </div>
 </body>
@@ -53,25 +75,62 @@
 	WB2.login(function(){
 	   document.getElementById('chart').style.visibility="visible";
 	   document.getElementById('start').addEventListener('click',function(){
-		   	// WB2.anyWhere(
-	     //      function(w){
-	     //          w.parseCMD("/statuses/friends_timeline.json",function(sResult, bStatus){
-	     //              var resulelist=sResult.statuses;
-	     //              resulelist.forEach(function(o){
-	     //                if(usercount[o.user.name]){
-	     //                  usercount[o.user.name]++;
-	     //                }
-	     //                else{
-	     //                  usercount[o.user.name]=1;
-	     //                  console.log(o.user.name);
-	     //                }
-	     //              });
-	     //              console.log(usercount);
-	     //            },{count:200},{method:'get'});
-	     //      }
-	     //    );
-	     //  }
-         //);
+	     document.getElementById('start').style.visibility="hidden";
+         document.getElementById('chart').style.background="#8393ca";
+         var progress=document.createElement("p");
+         progress.className="inprogress";
+         progress.innerHTML="分析中...";
+         document.getElementById('chart').appendChild(progress);
+         var usercount={};
+		 WB2.anyWhere(
+          function(w){
+              w.parseCMD("/statuses/friends_timeline.json",function(sResult, bStatus){
+                  var resulelist=sResult.statuses;
+                  resulelist.forEach(function(o){
+                  	var tag=o.user.name;
+                    if(usercount[tag]){
+                      usercount[tag].val++;
+                    }
+                    else{
+                      usercount[tag]={};
+                      usercount[tag].val=1;
+                      usercount[tag].ava=o.user.avatar_large;
+                    }
+                  });
+                  console.log(usercount);
+                  //查找最大的三个
+                  var result=new Array(3);
+                  for(var r=0;r<3;r++){result[r]={};result[r].name="";result[r].val=-1;result[r].ava="";}
+                  
+                  for(var i in usercount){
+                  	for(var r=0;r<3;r++){
+                  		if(usercount[i].val>result[r].val){
+                  			result[r].name=i;
+                  			result[r].val=usercount[i].val;
+                  			result[r].ava=usercount[i].ava;
+                  			break;
+                  		}
+                  	}
+                  }
+
+                  //console.log(result);
+
+                  //显示结果
+                  var resultDOM="";
+                  for(var r1=0;r1<3;r1++){
+                  	resultDOM+=("<li class='ava-list'><img src='"+result[r1].ava+"'/><p>"+result[r1].name+"</p><p>最近发布了<span class='count'>"+result[r1].val+"</span>条微博</p></li>");
+                  }
+                  var resultDOMCont=document.createElement('ul');
+                  resultDOMCont.className="resultlist";
+                  resultDOMCont.innerHTML=resultDOM;
+
+                  document.getElementById('chart').innerHTML="<h1>你关注的人最近谁最聒噪？</h1>";
+                  document.getElementById('chart').appendChild(resultDOMCont);
+
+                },{count:200},{method:'get'});
+          }
+        );
+
 	   },false);
 	});
 })(window);
