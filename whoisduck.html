@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>localStorageTest</title>
+  <script src=" http://tjs.sjs.sinajs.cn/open/api/js/wb.js?appkey=3433585717" type="text/javascript" charset="utf-8"></script>
+</head>
+<style>
+    body{
+    	background: pink;
+    	font-size: 12px;
+    }
+	.chart-board{
+		width: 800px;
+		height: 600px;
+		margin: 50px auto;
+		background: #8393ca;
+		border-radius:30px;
+		border:10px dashed white;
+		box-shadow: 0 0 20px;
+		visibility: hidden;
+	}
+	.chart-board h1{
+		font-size: 4em;
+		color: #7d4900;
+		text-align: center;
+		padding: 5s0px;
+		margin: 0;
+	}
+	#start{
+		background: #f26c4f;
+		font-size: 5em;
+		border-radius: 30px;
+		margin: 50px auto;
+		padding: 30px;
+		width: 260px;
+		color: white;
+		box-shadow: 0 0 10px;
+		cursor: pointer;
+	}
+	#start:hover{
+		box-shadow: 0 0 20px;
+	}
+</style>
+<body>
+ <div id="chart" class='chart-board'>
+ 	<h1>你的好友最近谁最聒噪？</h1>
+ 	<div id='start' class='btn-begin'>开始分析</div>
+ </div>
+</body>
+<script>
+(function(e){
+	WB2.login(function(){
+	   document.getElementById('chart').style.visibility="visible";
+	   document.getElementById('start').addEventListener('click',function(){
+		   	// WB2.anyWhere(
+	     //      function(w){
+	     //          w.parseCMD("/statuses/friends_timeline.json",function(sResult, bStatus){
+	     //              var resulelist=sResult.statuses;
+	     //              resulelist.forEach(function(o){
+	     //                if(usercount[o.user.name]){
+	     //                  usercount[o.user.name]++;
+	     //                }
+	     //                else{
+	     //                  usercount[o.user.name]=1;
+	     //                  console.log(o.user.name);
+	     //                }
+	     //              });
+	     //              console.log(usercount);
+	     //            },{count:200},{method:'get'});
+	     //      }
+	     //    );
+	     //  }
+         //);
+	   },false);
+	});
+})(window);
+</script>
+</html>
